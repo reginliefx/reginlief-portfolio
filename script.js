@@ -115,17 +115,26 @@ if (carouselImages.length > 0) {
 }
 
 /* ==========================
-   VISITOR COUNTER (CounterAPI v2)
+   VISITOR COUNTER (CounterAPI v2 Fixed)
    ========================== */
 async function updateVisitorCount() {
   const counterElement = document.getElementById('visitorCount');
   if (!counterElement) return;
 
   try {
-    const response = await fetch('https://api.counterapi.dev/v2/reginlief-views/up');
+    // เปลี่ยนตรง 'reginlief-team' ให้ตรงกับชื่อ Team/Workspace ของคุณใน CounterAPI
+    const response = await fetch('https://api.counterapi.dev/v2/reginlief-team/reginlief-views/up');
     const data = await response.json();
     
-    const views = data.data ? data.data.value : data.value;
+    let views = 0;
+    if (data.data && typeof data.data.value !== 'undefined') {
+      views = data.data.value;
+    } else if (typeof data.value !== 'undefined') {
+      views = data.value;
+    } else if (typeof data.count !== 'undefined') {
+      views = data.count;
+    }
+    
     counterElement.textContent = Number(views).toLocaleString();
   } catch (error) {
     console.error("CounterAPI error:", error);
