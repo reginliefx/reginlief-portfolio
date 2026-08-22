@@ -100,15 +100,15 @@ if (carouselImages.length > 0) {
 }
 
 /* ==========================
-   VISITOR COUNTER (CounterAPI v2 Global)
+   VISITOR COUNTER (Secure via Netlify Functions)
    ========================== */
 async function updateVisitorCount() {
   const counterElement = document.getElementById('visitorCount');
   if (!counterElement) return;
 
   try {
-    // ใช้ลิงก์ Endpoint จากหน้า API Usage ของคุณโดยตรง
-    const response = await fetch('https://api.counterapi.dev/v2/reginliefs-team-5211/reginlief-views/up');
+    // เรียกไปที่ Netlify Function ของเราเอง (ไม่มีใครเห็น Token แน่นอน)
+    const response = await fetch('/.netlify/functions/get-views');
     const data = await response.json();
     
     let views = 0;
@@ -122,7 +122,7 @@ async function updateVisitorCount() {
     
     counterElement.textContent = Number(views).toLocaleString();
   } catch (error) {
-    console.error("CounterAPI error:", error);
+    console.error("Counter fetch error:", error);
     counterElement.textContent = "0";
   }
 }
