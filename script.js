@@ -114,7 +114,26 @@ if (carouselImages.length > 0) {
   }, 3500);
 }
 
+/* ==========================
+   VISITOR COUNTER (CounterAPI v2)
+   ========================== */
+async function updateVisitorCount() {
+  const counterElement = document.getElementById('visitorCount');
+  if (!counterElement) return;
 
+  try {
+    const response = await fetch('https://api.counterapi.dev/v2/reginlief-views/up');
+    const data = await response.json();
+    
+    const views = data.data ? data.data.value : data.value;
+    counterElement.textContent = Number(views).toLocaleString();
+  } catch (error) {
+    console.error("CounterAPI error:", error);
+    counterElement.textContent = "0";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", updateVisitorCount);
 
 
 
