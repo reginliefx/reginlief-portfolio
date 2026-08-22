@@ -100,24 +100,22 @@ if (carouselImages.length > 0) {
 }
 
 /* ==========================
-   VISITOR COUNTER (Secure via Netlify Functions)
+   VISITOR COUNTER (Final Fix)
    ========================== */
 async function updateVisitorCount() {
   const counterElement = document.getElementById('visitorCount');
   if (!counterElement) return;
 
   try {
-    // เรียกไปที่ Netlify Function ของเราเอง (ไม่มีใครเห็น Token แน่นอน)
     const response = await fetch('/.netlify/functions/get-views');
     const data = await response.json();
     
+    // ดึงค่าจากโครงสร้างข้อมูลที่คุณเพิ่งส่งมา (data.data.up_count)
     let views = 0;
-    if (data.data && typeof data.data.value !== 'undefined') {
-      views = data.data.value;
-    } else if (typeof data.value !== 'undefined') {
+    if (data.data && typeof data.data.up_count !== 'undefined') {
+      views = data.data.up_count;
+    } else if (data.value) {
       views = data.value;
-    } else if (typeof data.count !== 'undefined') {
-      views = data.count;
     }
     
     counterElement.textContent = Number(views).toLocaleString();
