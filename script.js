@@ -100,22 +100,31 @@ if (carouselImages.length > 0) {
 }
 
 /* ==========================
-   VISITOR COUNTER (Local Safe Version)
+   VISITOR COUNTER (CounterAPI v2 Global)
    ========================== */
-function updateVisitorCount() {
+async function updateVisitorCount() {
   const counterElement = document.getElementById('visitorCount');
   if (!counterElement) return;
 
-  // ใช้ระบบนับผ่านเครื่องผู้ใช้ (LocalStorage) เพื่อตัดปัญหาเรื่อง API ล่มหรือโดนบล็อก 404/Adblocker 100%
-  let views = localStorage.getItem('reginlief_portfolio_views');
-  if (!views) {
-    views = 1; // เริ่มนับจาก 1
-  } else {
-    views = parseInt(views) + 1;
+  try {
+    // ใช้ลิงก์ Endpoint จากหน้า API Usage ของคุณโดยตรง
+    const response = await fetch('https://api.counterapi.dev/v2/reginliefs-team-5211/reginlief-views/up');
+    const data = await response.json();
+    
+    let views = 0;
+    if (data.data && typeof data.data.value !== 'undefined') {
+      views = data.data.value;
+    } else if (typeof data.value !== 'undefined') {
+      views = data.value;
+    } else if (typeof data.count !== 'undefined') {
+      views = data.count;
+    }
+    
+    counterElement.textContent = Number(views).toLocaleString();
+  } catch (error) {
+    console.error("CounterAPI error:", error);
+    counterElement.textContent = "0";
   }
-  localStorage.setItem('reginlief_portfolio_views', views);
-  
-  counterElement.textContent = Number(views).toLocaleString();
 }
 
 document.addEventListener("DOMContentLoaded", updateVisitorCount);
